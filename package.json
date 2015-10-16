@@ -1,0 +1,17 @@
+{
+  "name": "sonnetron",
+  "version": "0.0.1",
+  "description": "",
+  "dependencies": {
+    "twit": "^2.1.0",
+    "rita": "^1.1.19",
+    "node-static": "^0.7.7"
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "start": "node sonnetron.js"
+  },
+  "author": "",
+  "license": "yo"
+}
