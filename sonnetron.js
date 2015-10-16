@@ -2,6 +2,8 @@ var Twit = require('twit');
 var rita = require('rita');
 var fs = require('fs');
 
+var d1 = new Date();//for debug time
+
 var Bot = require('./bot');
 var config1 = require('./config1');
 var bot = new Bot(config1);
@@ -16,7 +18,6 @@ require('http').createServer(function(request, response) {
   }).resume();
 }).listen(process.env.PORT || 3000);
 
-
 //initialize the stream
 var stream = bot.twit.stream('statuses/sample');
 console.log('Sonnetron is Running');
@@ -25,9 +26,13 @@ fs.appendFileSync('./index.html', 'running...', encoding='utf8');
 
 //every time the stream fires off a tweet, filter the tweet.
 //save the tweet if it passes all of the filters
+tweetCounter = 0;
 
 stream.on('tweet', function (tweet) {
   var filterableTweet = [tweet];
+
+  tweetCounter++
+  fs.writeFile('./tweet-counter.html', '<!doctype html><html><head><meta charset="utf-8"><title></title></head><body><pre><code>' + '\n' + 'This robot has parsed ' + tweetCounter + ' tweets since its last deploy on ' + d1.toUTCString() + '.', encoding='utf8')
 
   var filteredTweet = 
   filterableTweet
