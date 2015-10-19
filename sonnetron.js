@@ -8,7 +8,7 @@ var Bot = require('./bot');
 var config1 = require('./config1');
 var bot = new Bot(config1);
 
-//start a server to look at the 
+//start a server to look at the output logs
 var static = require('node-static');
 var file = new static.Server();
 console.log('Server is running');
@@ -29,22 +29,16 @@ fs.appendFileSync('./index.html', 'running...', encoding='utf8');
 tweetCounter = 0;
 
 stream.on('tweet', function (tweet) {
-  var filterableTweet = [tweet];
 
   tweetCounter++
   fs.writeFile('./tweet-counter.html', '<!doctype html><html><head><meta charset="utf-8"><title></title></head><body><pre><code>' + '\n' + 'This robot has parsed ' + tweetCounter + ' tweets since its last deploy on ' + d1.toUTCString() + '.', encoding='utf8')
 
-  var filteredTweet = 
-  filterableTweet
-  .filter(isEnglish)
-  .filter(isNotARetweet)
-  .filter(isNotAReply)
-  .filter(hasNoURL)
-  .filter(hasNoTickerSymbols)
-  .filter(hasNoAttachedMedia)
-  .filter(hasNoHashtags);
+  //run the tweet by all of the filters and then reduce the response into a bool true/false.
+  var usableTweet = basicFilters.reduce( function(previous, current) {
+    return previous && current(tweet);
+  }, true );
 
-  if (filteredTweet[0] != undefined) {
+  if (usableTweet) {
     var tweetParse = rita.RiString(tweet.text).features().stresses;
     var stressNumbersOnly = tweetParse.replace(/\D/g,'');
     tweetVal = tweet.id + ': ' + tweet.text + '\n';
@@ -74,65 +68,48 @@ stream.on('tweet', function (tweet) {
   } 
 });
 
+//---------Define Dem Basic Filters-------//
+var basicFilters = [
+  isEnglish,
+  isNotARetweet,
+  isNotAReply,
+  hasNoURL,
+  hasNoTickerSymbols,
+  hasNoAttachedMedia,
+  hasNoHashtags
+]
+
 //english only
 function isEnglish(tweet) {
-  if (tweet.lang === 'en') {
-    return true;
-  } else {
-    return false;
-  }
+   return tweet.lang === 'en';
 };
 
 //no Retweets
 function isNotARetweet(tweet) {
- if (!tweet.retweeted_status) {
-  return true;
- } else {
-  return false;
- }
+  return !tweet.retweeted_status;
 };
 
 //no mentions
 function isNotAReply(tweet) {
-  if (tweet.entities.user_mentions === undefined || !tweet.entities.user_mentions.length) {
-    return true;
-  } else {
-    return false;
-  }
+  return tweet.entities.user_mentions === undefined || !tweet.entities.user_mentions.length;
 };
 
 //no URLs
 function hasNoURL(tweet) {
- if (tweet.entities.urls === undefined || !tweet.entities.urls.length) { 
-  return true;
- } else {
-  return false;
- }
+  return tweet.entities.urls === undefined || !tweet.entities.urls.length;
 };
 
 //no hashtags
 function hasNoHashtags(tweet) {
- if (tweet.entities.hashtags === undefined || !tweet.entities.hashtags.length) { 
-  return true;
- } else {
-  return false;
- }
+  return tweet.entities.hashtags === undefined || !tweet.entities.hashtags.length;
 };
 
 //no ticker symbols
 function hasNoTickerSymbols(tweet) {
- if (tweet.entities.symbols === undefined || !tweet.entities.symbols.length) { 
-  return true;
- } else {
-  return false;
- }
+  return tweet.entities.symbols === undefined || !tweet.entities.symbols.length;
 };
 
 //no attached mediua
 function hasNoAttachedMedia(tweet) {
- if (tweet.entities.media === undefined || !tweet.entities.media.length) { 
-  return true;
- } else {
-  return false;
- }
+  return tweet.entities.media === undefined || !tweet.entities.media.length; 
 };
