@@ -3,11 +3,14 @@
   "version": "0.0.1",
   "description": "",
   "dependencies": {
-    "twit": "^2.1.0",
+    "express": "^4.13.3",
+    "mongoose": "^4.2.3",
+    "node-static": "^0.7.7",
     "rita": "^1.1.19",
-    "node-static": "^0.7.7"
+    "twit": "^2.1.0"
   },
   "devDependencies": {
+    "express": "^4.13.3"
   },
   "scripts": {
     "start": "node sonnetron.js"

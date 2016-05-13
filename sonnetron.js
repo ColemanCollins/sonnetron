@@ -8,7 +8,7 @@ var Bot = require('./bot');
 var config1 = require('./config1');
 var bot = new Bot(config1);
 
-//start a server to look at the output logs
+// start a server to look at the output logs
 var static = require('node-static');
 var file = new static.Server();
 console.log('Server is running');
@@ -30,7 +30,7 @@ tweetCounter = 0;
 
 stream.on('tweet', function (tweet) {
 
-  tweetCounter++
+  // tweetCounter++
   fs.writeFile('./tweet-counter.html', '<!doctype html><html><head><meta charset="utf-8"><title></title></head><body><pre><code>' + '\n' + 'This robot has parsed ' + tweetCounter + ' tweets since its last deploy on ' + d1.toUTCString() + '.', encoding='utf8')
 
   //run the tweet by all of the filters and then reduce the response into a bool true/false.
@@ -39,34 +39,58 @@ stream.on('tweet', function (tweet) {
   }, true );
 
   if (usableTweet) {
-    var tweetParse = rita.RiString(tweet.text).features().stresses;
-    var stressNumbersOnly = tweetParse.replace(/\D/g,'');
-    tweetVal = tweet.id + ': ' + tweet.text + '\n';
+    var tweetParse = rita.RiString(tweet.text).features()//.stresses;
+    console.log(tweet);
+    console.log(tweetParse);
+    // var tweetParse = rita.RiString(tweet.text).features().stresses;
+    // var stressNumbersOnly = tweetParse.replace(/\D/g,'');
+    // tweetVal = tweet.id + ': ' + tweet.text + '\n';
     //log the sonnet verses
-    if ( /^0101010101$/gm.test(stressNumbersOnly) ) {
-      fs.appendFileSync('./sonnetron.html', tweetVal, encoding='utf8');
-    } 
-    //log the long limerick verses
-    else if ( /^010010010?$/gm.test(stressNumbersOnly) ) {
-      fs.appendFileSync('./limericker-long.html', tweetVal, encoding='utf8');
-    }
-    //log the short limerick verses
-    else if ( /^010010?$/gm.test(stressNumbersOnly) ) {
-      fs.appendFileSync('./limericker-short.html', tweetVal, encoding='utf8');
-    }
-    //additional long verse tests
-    else if ( /^111110010?$/gm.test(stressNumbersOnly) ) {
-      fs.appendFileSync('./limericker-test-long.html', tweetVal, encoding='utf8');
-    }
-    //additional short verse tests
-    else if ( /^110010?$/gm.test(stressNumbersOnly) ) {
-      fs.appendFileSync('./limericker-test-short.html', tweetVal, encoding='utf8');
-    }
-    else if ( /^(0|1)(0|1)1(0|1)(0|1)0010?$/gm.test(stressNumbersOnly) ) {
-      fs.appendFileSync('./limericker-easy-test.html', tweetVal, encoding='utf8');
-    }
+    // if ( /^0101010101$/gm.test(stressNumbersOnly) ) {
+    //   fs.appendFileSync('./sonnetron.html', tweetVal, encoding='utf8');
+    // } 
+    // //log the long limerick verses
+    // else if ( /^010010010?$/gm.test(stressNumbersOnly) ) {
+    //   fs.appendFileSync('./limericker-long.html', tweetVal, encoding='utf8');
+    // }
+    // //log the short limerick verses
+    // else if ( /^010010?$/gm.test(stressNumbersOnly) ) {
+    //   fs.appendFileSync('./limericker-short.html', tweetVal, encoding='utf8');
+    // }
+    // //additional long verse tests
+    // else if ( /^111110010?$/gm.test(stressNumbersOnly) ) {
+    //   fs.appendFileSync('./limericker-test-long.html', tweetVal, encoding='utf8');
+    // }
+    // //additional short verse tests
+    // else if ( /^110010?$/gm.test(stressNumbersOnly) ) {
+    //   fs.appendFileSync('./limericker-test-short.html', tweetVal, encoding='utf8');
+    // }
+    // else if ( /^(0|1)(0|1)1(0|1)(0|1)0010?$/gm.test(stressNumbersOnly) ) {
+    //   fs.appendFileSync('./limericker-easy-test.html', tweetVal, encoding='utf8');
+    // }
   } 
 });
+
+// tweet {
+//   id:  234567898765439
+//   text: 'that drake song is so good'
+//   metadata: 
+//     tweeter username?
+//     syllable count   8
+//     rhyming index   buh-ree-toe
+//     total stress pattern   0 1/0 1/1 0/0/1 0/0
+// }
+
+//mongoDB
+  //unenforced schema and amorphous stuff
+  //using elasticsearch?
+
+  
+
+
+
+
+
 
 //---------Define Dem Basic Filters-------//
 var basicFilters = [
